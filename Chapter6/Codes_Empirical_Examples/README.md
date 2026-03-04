@@ -10,3 +10,9 @@ Table 1B--Prior and Posterior Distribution of Shock Processes
 
 This is essentially a rewrite of Smets and Wouters' own code, which is available at
 http://www.aeaweb.org/articles.php?doi=10.1257/aer.97.3.586
+
+More information and DSGE codes:
+
+https://github.com/jeromematthewcelestine
+
+https://github.com/JohannesPfeifer
