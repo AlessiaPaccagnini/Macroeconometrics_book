@@ -2,6 +2,16 @@
 **Alessia Paccagnini**  
 *Macroeconometrics*
 
+## Citation
+
+If you use these codes in your research or teaching, please cite:
+
+Paccagnini, A. (forthcoming). *Macroeconometrics*. De Gruyter.
+
+Companion code repository:
+
+Paccagnini, A. (2026). *Macroeconometrics — Companion Code Repository* (Version v1.0.0) [Software]. Zenodo. https://doi.org/10.5281/zenodo.20739680
+
 ---
 
 ## About this repository
