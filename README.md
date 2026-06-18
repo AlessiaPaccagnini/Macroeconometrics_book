@@ -1,4 +1,4 @@
-#Macroeconometrics — Companion Code Repository
+Macroeconometrics — Companion Code Repository
 **Alessia Paccagnini**  
 *Macroeconometrics*
 
