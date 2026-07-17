@@ -172,7 +172,7 @@ DSGE model estimation requires Dynare, which provides a purpose-built preprocess
 If you use these codes in your research or teaching, please cite:
 
 ```
-Paccagnini, A. (forthcoming). Macroeconometrics. De Gruyter.
+Paccagnini, A. (2026). Macroeconometrics. De Gruyter.
 ```
 
 ---
