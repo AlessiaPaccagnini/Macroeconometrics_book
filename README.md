@@ -28,6 +28,11 @@ All codes are provided in three languages: **Python**, **R**, and **MATLAB**. Th
 **Data** required to run the empirical examples are included in the repository alongside the code.
 
 > **This repository is actively maintained.** Further codes, datasets, and supplementary materials will be continuously added as the book goes to press.
+>
+> Thanks **Kelvin Marcano** for pointing out some potential bugs
+### Acknowledgment
+
+Special thanks to **Kelvin Marcano** for carefully reviewing the companion code and for identifying potential bugs and reproducibility issues that helped improve the codebase.
 
 ---
 
