@@ -1,4 +1,4 @@
-### Extra Code: DSGE Models with Stochastic Volatility and Student-t Shocks
+ DSGE Models with Stochastic Volatility and Student-t Shocks
 
 As an additional computational resource for readers interested in extending the DSGE methods discussed in the book, the **DSGE-SVt MATLAB Toolbox** provides tools for the Bayesian analysis of high-dimensional DSGE models with Student-t shocks and stochastic volatility.
 
