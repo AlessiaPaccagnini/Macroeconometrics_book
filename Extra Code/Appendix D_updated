@@ -1,1 +1,369 @@
+**Appendix D: Software, Data, and Online Resources**
+
+Sep 29, 2026 · Updated
+
+This appendix provides a comprehensive guide to the computational and data resources essential for applied macroeconometrics. Section D.1 organizes software packages and toolboxes by econometric methodology, with cross-references to the relevant chapters where each method is developed. Section D.2 covers the principal data sources, organized by geographic coverage and data type. Section D.3 offers practical recommendations for software selection, working with survey data, and managing computational challenges. Section D.4 collects code repositories, author websites, and community resources. All resources mentioned are freely available unless otherwise noted and were actively maintained as of early 2026.
+Navigating This Appendix
+•	Software for a specific method → Section D.1, organized by methodology (VAR, DSGE, local projections, etc.).
+•	Data for empirical work → Section D.2, covering US sources (including FRED), international databases, real-time vintages, financial markets, and surveys.
+•	Choosing the right tool → Section D.3, with recommendations by use case.
+•	Quick reference → Tables D.3–D.6 at the end of this appendix.
+D.1 Software Resources by Methodology
+This section organizes software packages by econometric methodology rather than by programming language. Each subsection includes cross-references to the relevant chapters where these methods are developed.
+D.1.1 ARIMA and GARCH Models
+Related chapter: Chapter 1 (Univariate Models)
+ARIMA Models
+R: forecast and fable. The forecast package (Hyndman and Khandakar, 2008) is the most widely used R package for univariate time series forecasting. It implements the Hyndman–Khandakar algorithm for automatic ARIMA order selection via stepwise AIC minimization, as well as exponential smoothing state space models (ETS), ARFIMA, TBATS, and neural network autoregressions. The companion textbook Forecasting: Principles and Practice (Hyndman and Athanasopoulos, 2021) provides thorough coverage of these methods and is freely available online at https://otexts.com/fpp3/. Its tidyverse-compatible successor, the fable package (O'Hara-Wild et al., 2024), implements the same models within the tsibble framework, making it particularly suited for handling and forecasting many related series simultaneously. Both packages include comprehensive model diagnostics and forecast accuracy evaluation.
+•	CRAN (forecast): https://cran.r-project.org/package=forecast
+•	CRAN (fable): https://cran.r-project.org/package=fable
+Python. In Python, statsmodels provides the SARIMAX class for seasonal ARIMA with exogenous regressors, with full maximum likelihood estimation and diagnostics. For automatic model selection, the pmdarima package replicates the auto.arima functionality of R's forecast package. In Stata, ARIMA and SARIMA models are available through the built-in arima command, with postestimation tools for residual diagnostics and dynamic forecasting.
+Stata. Stata supports ARCH and GARCH estimation via the built-in arch command (available since Stata 9), covering GARCH, EGARCH, TARCH/GJR-GARCH, NARCH, and SAARCH specifications, with a range of distributional options and postestimation tests for ARCH effects.
+GARCH and Volatility Models
+As discussed in Chapter 1, GARCH models (Bollerslev, 1986) and their extensions (EGARCH, GJR-GARCH, TGARCH, FIGARCH, and Realized GARCH) are the standard tools for modeling conditional heteroskedasticity in financial time series. They serve both as standalone volatility forecasting models and as components within ARMA-GARCH specifications for joint mean-variance modeling.
+R: rugarch. The rugarch package (Ghalanos, 2024) is the most comprehensive R package for univariate GARCH modeling. It implements the full family of GARCH specifications—standard GARCH, EGARCH (Nelson, 1991), GJR-GARCH (Glosten et al., 1993), APARCH, FIGARCH, component GARCH, and Realized GARCH—and supports a wide range of innovation distributions, including normal, Student-t, skew-Student, generalized error distribution, and their skewed variants. The mean equation allows for ARFIMA dynamics and ARCH-in-mean terms. The package provides maximum likelihood estimation via C++ code, rolling backtesting, bootstrap forecasting, and Value-at-Risk evaluation tests. The companion rmgarch package extends estimation to multivariate specifications, including DCC-GARCH (Engle, 2002), GO-GARCH, and Copula-GARCH models.
+•	CRAN (rugarch): https://cran.r-project.org/package=rugarch
+•	CRAN (rmgarch): https://cran.r-project.org/package=rmgarch
+R: fGarch and tseries. For simpler applications, fGarch (part of the Rmetrics suite) provides GARCH(p,q) and EGARCH estimation with a straightforward interface, while the tseries package includes garch() for basic GARCH fitting and is commonly used in introductory contexts alongside unit root tests (ADF, KPSS, PP).
+Python. The arch package (Sheppard, 2024) provides GARCH model estimation in Python, implementing GARCH, EGARCH, FIGARCH, and Realized GARCH specifications with multiple distributional assumptions. It integrates naturally with NumPy and pandas objects and supports rolling estimation and Value-at-Risk backtesting. For ARIMA modeling combined with GARCH errors, the statsmodels SARIMAX can be combined with arch in a two-step workflow.
+•	Documentation: https://arch.readthedocs.io
+D.1.2 VAR and Structural VAR Analysis
+Related chapters: Chapter 2 (VAR Models), Chapter 4 (Shock Identification), Chapter 5 (Bayesian VARs)
+Three comprehensive MATLAB toolboxes have become standard references for VAR analysis in macroeconomics. Table D.1 summarizes their key features.
+MATLAB Toolboxes
+VAR Toolbox. Developed by Ambrogio Cesa-Bianchi from the Bank of England, this toolbox provides well-documented implementations of frequentist VAR methods with multiple identification schemes. It estimates reduced-form VARs via OLS and supports several structural identification strategies: Cholesky ordering, Blanchard–Quah long-run restrictions (Blanchard and Quah, 1989), sign restrictions following Rubio-Ramírez et al. (2010), external instruments/Proxy SVAR (Stock and Watson, 2012a; Mertens and Ravn, 2013), and combined sign restrictions with instruments. Inference is conducted through bootstrap confidence intervals (with multiple methods available), and the toolbox produces impulse responses, forecast error variance decompositions, and historical decompositions. It includes a helpful "VAR Primer" with slides and replication codes for Gertler and Karadi (2015), Uhlig (2005), and Stock and Watson (2001).
+•	Available at: https://github.com/ambropo/VAR-Toolbox
+Table D.1: Comparison of Major MATLAB VAR Toolboxes.
+Feature	VAR Toolbox	BVAR_	BEAR
+Frequentist estimation	✓	✓	–
+Bayesian estimation	–	✓	✓
+Graphical interface	–	–	✓
+Sign restrictions	✓	✓	✓
+Proxy SVAR	✓	✓	–
+Narrative restrictions	–	✓	–
+Mixed-frequency	–	✓	✓
+FAVAR	–	✓	✓
+Time-varying parameters	–	–	✓
+Local projections	–	✓	–
+Video tutorials	–	✓	–
+Vector-Autoregression. This MATLAB package, maintained by Lorenzo Menna, provides a comprehensive toolkit for estimating VAR models, covering structural and Bayesian VAR, GMM estimation, max share identification, sign restrictions, and counterfactual historical decomposition with channel restrictions.
+•	Available at: https://github.com/lmenna84/Vector-Autoregression/
+BVAR_ Toolbox. Developed by Fabio Canova and Filippo Ferroni, this is one of the most comprehensive Bayesian VAR packages, documented in "A Hitchhiker's Guide to Empirical Macro Models" (Canova and Ferroni, 2021). It is a recommended starting point for researchers new to Bayesian methods. The toolbox supports Minnesota, conjugate, and hierarchical priors with optimal hyperparameter selection, and covers a wide range of model classes, including standard BVARs, mixed-frequency VARs, factor-augmented VARs (FAVAR), and panel VARs with cross-sectional heterogeneity. Identification options include Cholesky, sign restrictions, narrative restrictions, and external instruments. Beyond VAR analysis, the toolbox also implements local projections, both classical and Bayesian, spillover and connectedness measures, trend-cycle decomposition, and business cycle dating. Forecasting capabilities include both point and density forecasts with comprehensive evaluation metrics. Extensive video tutorials are available on YouTube.
+•	Available at: https://github.com/naffe15/BVAR_
+BEAR Toolbox (European Central Bank). User-friendly Bayesian VAR toolkit developed by Alistair Dieppe, Romain Legrand, and Björn van Roye. Particularly suited for policy analysis and users who prefer a graphical interface. BEAR offers a graphical user interface that makes it accessible to nonprogrammers. On the estimation side, it supports Minnesota, normal-Wishart, Sims–Zha, dummy observation, and pandemic priors, as well as time-varying parameters and stochastic volatility (see Chapter 10). The toolbox also handles mixed-frequency estimation, factor-augmented VARs, and Bayesian Panel VARs with hierarchical priors. For policy work, it provides conditional forecasting for scenario analysis, equilibrium VARs for trend-cycle decomposition, and sign and magnitude restrictions for structural identification.
+•	Documentation: Dieppe et al. (2016)
+•	Available at: https://github.com/european-central-bank/BEAR-toolbox
+•	ECB page: https://www.ecb.europa.eu/pub/research/working-papers/html/bear-toolbox.en.html
+•	Pandemic priors: https://github.com/dcascaldi/pandemic_priors
+BVAR Toolkit (Joshua Chan). Joshua Chan maintains a MATLAB toolkit for Bayesian VARs that complements the toolboxes above, together with a set of step-by-step tutorials on Bayesian macroeconometric methods.
+•	Available at: https://github.com/joshuaccchan/bvar-toolkit
+•	Tutorials: https://joshuachan.org/tutorials/
+Applied Bayesian Econometrics for Central Bankers. Written by Andrew Blake and Haroon Mumtaz, these comprehensive lecture notes and MATLAB codes cover Bayesian VAR and DSGE estimation and are ideal for self-study.
+•	Available at: https://www.dropbox.com/scl/fi/awdrimya898ay223o5ako/draft2.pdf?rlkey=sx34s9iickjqx9f4gd2u6awiv&e=1&dl=0
+R Packages
+R offers a rapidly growing ecosystem for VAR analysis, with packages providing both frequentist and Bayesian approaches.
+bsvars. State-of-the-art Bayesian structural VAR package implemented in C++ for computational speed. Recommended for research requiring heteroskedasticity-based identification. This package, developed by Tomasz Woźniak, supports both homoskedastic and heteroskedastic specifications, with stochastic volatility (centered and noncentered parameterizations) and Markov-switching heteroskedasticity. It also accommodates nonnormal structural shocks (Student-t and mixture distributions) and provides identification through exclusion restrictions, heteroskedasticity, and nonnormality, with built-in verification tools. Estimation uses three-level hierarchical shrinkage priors. Two companion packages extend its functionality: bsvarSIGNs for sign-restricted identification and bpvars for Bayesian panel VARs.
+•	CRAN: https://cran.r-project.org/package=bsvars
+•	Website: https://bsvars.org
+•	Reference: Woźniak (2024)
+Additional R Packages. The vars package (Pfaff, 2008) provides standard frequentist VAR estimation with Granger causality tests, impulse responses, and forecast error variance decompositions—it is the workhorse for quick exploratory analysis. For Bayesian work, BVAR implements the Giannone et al. (2015) approach to automatic hyperparameter selection, treating the Minnesota prior hyperparameters as unknown and estimating them from the data (as discussed in Chapter 5). The bvartools package (Mohr, 2020) offers flexible BVAR estimation with multiple priors, SVAR identification, and factor models. Additional specialized packages include VARsignR for sign-restricted VAR identification, mfbvar for mixed-frequency Bayesian VAR with stochastic volatility (see Chapter 11), and bvarsv for time-varying parameter VARs following Primiceri (2005) (see Chapter 10).
+Python and Stata
+Python. Python's coverage of structural VAR methods remains less developed than MATLAB or R. For standard reduced-form analysis, statsmodels provides VAR, VECM, state space models, and comprehensive time series tools, while PyMC enables Bayesian VAR estimation through probabilistic programming (though it requires custom model specification). For advanced identification methods, researchers often adapt replication code from published papers or translate existing MATLAB/R implementations.
+Stata. Stata provides the built-in commands var and svar for reduced-form and structural VAR estimation, and bayes:var for Bayesian VAR estimation (available from Stata 15 onward).
+D.1.3 Local Projections
+Related chapter: Chapter 3 (Local Projections)
+Local projections (Jordà, 2005) provide a flexible alternative to VARs for impulse response estimation. As discussed in Chapter 3, they offer robustness to model misspecification at the cost of efficiency.
+R: lpirfs. The most comprehensive package for linear and nonlinear local projections, developed by Philipp Adämmer. It supports linear local projections with Newey–West standard errors, state-dependent responses following Auerbach and Gorodnichenko (2012), panel data local projections, and instrumental variable estimation (LP-IV), and includes replication of Ramey and Zubairy (2018).
+•	CRAN: https://cran.r-project.org/package=lpirfs
+•	Reference: Adämmer (2019)
+Stata Commands. Stata offers the native lpirf command for local projections (from Stata 17 onward), the SSC package locproj for panel data local projections, and lpdid for local projections difference-in-differences (Jordà and Taylor, 2024).
+MATLAB. Local projections are included in the BVAR_ toolbox (Canova–Ferroni), and additional code is available on Òscar Jordà's website: https://sites.google.com/site/oscarjorda/home/local-projections.
+D.1.4 DSGE Models
+Related chapter: Chapter 6 (DSGE Models)
+Dynare: The Industry Standard
+Dynare remains the dominant platform for DSGE solution and estimation, continuously developed at CEPREMAP. As noted in Chapter 6, its widespread adoption means extensive documentation, active user forums, and compatibility with published replication codes. The current version (6.x) supports first-, second-, and third-order perturbation (with pruning) as well as perfect foresight simulations. Estimation capabilities include maximum likelihood and Bayesian estimation (Fernández-Villaverde and Rubio-Ramírez, 2007; Schorfheide, 2000) via Metropolis–Hastings and other samplers. For policy analysis, it offers optimal policy computation under both discretion and commitment, including Ramsey optimal policy. Identification and sensitivity analysis tools provide useful diagnostics. Notable extensions include handling of occasionally binding constraints (OccBin toolkit), mixed-frequency estimation, and particle filtering for nonlinear models. Dynare runs on MATLAB, GNU Octave, and testing in Julia.
+•	Website: https://www.dynare.org
+•	Forum: https://forum.dynare.org (essential for troubleshooting)
+DSGE Models with Stochastic Volatility and Student-t Shocks
+As an additional computational resource for readers interested in extending the DSGE methods discussed in the book, the DSGE-SVt MATLAB Toolbox provides tools for the Bayesian analysis of high-dimensional DSGE models with Student-t shocks and stochastic volatility.
+The MATLAB® programs in this package perform Bayesian analysis of high-dimensional DSGE models with Student-t shocks and stochastic volatility. The toolbox simulates the posterior distribution using the tailored randomized-block Metropolis–Hastings (TaRB-MH) algorithm of Chib and Ramamurthy (2010), calculates the marginal likelihood using the methods of Chib (1995) and Chib and Jeliazkov (2001), and includes a range of post-estimation tools.
+For further details, see the accompanying paper by Chib, Shin and Tan (2020), "DSGE-SVt: An Econometric Toolkit for High-Dimensional DSGE Models with SV and t Errors."
+•	Code and documentation: DSGE-SVt MATLAB Toolbox on GitHub
+DSGE Model Repositories
+DSGE_mod Collection. Johannes Pfeifer maintains the most comprehensive public repository with 60+ replicated models. This is an invaluable resource for learning Dynare and verifying your own implementations. The collection includes landmark models such as Smets and Wouters (2007) (the benchmark medium-scale DSGE), Christiano et al. (2005) on nominal rigidities and monetary policy, Gertler et al. (2007) on the financial accelerator, as well as Aguiar–Gopinath (2007) on emerging markets, Jermann–Quadrini (2012) on financial shocks, and the textbook models from Galí (2015) that are particularly useful for teaching.
+•	Available at: https://github.com/JohannesPfeifer/DSGE_mod
+Macro Model Database (MMB). Systematic collection of models in a unified framework, enabling cross-model comparison of policy rules and shock transmission.
+•	Website: https://www.macromodelbase.com
+QuantEcon. Open-source lectures and code for quantitative economics in Python and Julia, covering both DSGE and other dynamic models.
+•	Website: https://quantecon.org
+Python Packages for DSGE
+A growing ecosystem of Python packages now supports DSGE model solution, simulation, and Bayesian estimation. While none yet matches Dynare's breadth, several offer distinctive advantages—particularly modern sampling algorithms, JAX-accelerated computation, and native integration with the broader Python scientific stack.
+gEconpy. Developed by Jesse Grabowski and inspired by the R package gEcon, gEconpy allows users to specify DSGE models in the optimization problem space using .GCN files: one writes down utility functions, constraints, and calibration blocks, and the package derives first-order conditions automatically. This substantially reduces the risk of algebraic errors and facilitates rapid prototyping—adding a term to the utility function, for example, requires modifying only a few lines rather than rederiving the entire model by hand. Bayesian estimation is performed via PyMC, supporting both Metropolis–Hastings and the gradient-based No-U-Turn Sampler (NUTS) through nutpie, which exploits JAX compilation for significant speed gains over traditional random-walk algorithms. The package also supports maximum likelihood and MAP estimation. A useful feature is the ability to export solved models to Dynare .mod files, enabling cross-validation against the standard platform.
+•	Available at: https://github.com/jessegrabowski/gEconpy
+•	Documentation: https://geconpy.readthedocs.io
+pydsge. This package, developed by Gregor Boehl, is specifically designed for estimating and simulating DSGE models with occasionally binding constraints, such as the effective lower bound on interest rates (Boehl and Strobel, 2024; Boehl, 2022). It uses a hybrid nonlinear filter combining elements of the particle filter and the Kalman filter, and comes equipped with the Differential-Independence Mixture Ensemble (DIME) MCMC sampler—a global sampler that simultaneously serves as a multistart optimizer and posterior simulator, making preliminary mode-finding unnecessary. Of particular practical interest is the accompanying model library (projectlib), which includes ready-to-use YAML specifications of the Smets and Wouters (2007) model (rank.yaml), its extension with hand-to-mouth agents (TANK, tank.yaml), and versions with BGG-type financial frictions (frank.yaml, ftank.yaml). Models are specified in a Dynare-like YAML syntax with the model equations provided in log-linearized form.
+•	Available at: https://github.com/gboehl/pydsge
+•	Documentation: https://pydsge.readthedocs.io
+•	Model library: https://github.com/gboehl/projectlib
+dsgepy. A lightweight Python library, developed by Gustavo Amarante, for specifying, calibrating, solving, simulating, and estimating linearized DSGE models. The specification interface mirrors Dynare's symbolic approach, and solution relies on the Sims (2002) methodology. Estimation uses Bayesian MCMC. While less feature-rich than the packages above, it provides a fully self-contained, pure-Python implementation that may be attractive for teaching purposes.
+•	Available at: https://github.com/gusamarante/dsgepy
+PyMacLab. The Python Macroeconomics Laboratory supports solving nonlinear DSGE models using first- and second-order perturbation methods, based on Paul Klein's Schur decomposition approach and the Gomme–Klein method for second-order accuracy. It employs a Dynare-like model file parser and includes example models up to the complexity of Christiano et al. (2005). Development has slowed in recent years, but the codebase remains a useful reference.
+•	Available at: https://github.com/escheffel/pymaclab
+Direct PyMC Approach. For advanced users, it is also possible to build a custom DSGE estimation pipeline by combining individual Python components: a rational expectations solver (e.g., gensys or Blanchard–Kahn implementations available on GitHub), the Kalman filter from statsmodels or a custom implementation, and Bayesian sampling through PyMC or emcee. This modular approach requires more upfront effort but offers full flexibility over the estimation procedure, including the use of Sequential Monte Carlo (SMC) methods, custom proposal distributions, and non-standard state-space formulations.
+Julia Packages for DSGE
+Julia offers computational advantages with speed approaching C++ (Aruoba and Fernández-Villaverde, 2015), making it attractive for computationally intensive applications such as particle filtering or estimation with many shocks.
+Dynare.jl. Native Julia rewrite compatible with standard .mod files. Supports PATH solver and PARDISO for improved performance.
+•	Available at: https://github.com/DynareJulia/Dynare.jl
+MacroModelling.jl. Modern Julia-native DSGE toolkit with advanced features developed by Thore Kockerols. It supports first-, second-, and third-order perturbation with pruning, gradient-based Bayesian estimation via automatic differentiation, and NUTS and HMC samplers that typically converge faster than random-walk Metropolis. An extensive model library is included (Kockerols, 2023).
+•	Documentation: http://www.thorekockerols.eu/MacroModelling.jl/stable/
+SolveDSGE.jl. Developed by Richard Dennis, SolveDSGE.jl is a Julia package for solving DSGE models using global solution methods, including perturbation, projection, and sparse grids.
+•	Available at: https://github.com/RJDennis/SolveDSGE.jl
+Other DSGE Software
+Several additional platforms serve specialized needs. The IRIS Toolbox (MATLAB) supports the Global Projection Model Network used by several central banks. The RISE Toolbox (MATLAB, developed by Junior Maih) is designed specifically for regime-switching DSGE models. In R, gEcon provides general equilibrium modeling with symbolic differentiation. For Python users, Dolo/Dolang offers symbolic model specification and global solution methods.
+D.1.5 Time-Varying Parameter and Regime-Switching Models
+Related chapter: Chapter 10 (Time-Varying Parameters and Structural Change)
+Time-Varying Parameter VAR
+As discussed in Chapter 10, the TVP-VAR with stochastic volatility (Primiceri, 2005) has become the workhorse for studying evolving macroeconomic relationships.
+R Packages. The bvarsv package implements the Primiceri (2005) specification with the Kim–Shephard–Chib sampler for stochastic volatility, while shrinkTVP applies shrinkage priors for time-varying parameters, directly addressing the overparameterization problem.
+MATLAB Code. Several researchers maintain high-quality MATLAB implementations. Joshua Chan provides extensive TVP-VAR, stochastic volatility, and hybrid model codes (https://joshuachan.org/code.html), together with a BVAR toolkit (https://github.com/joshuaccchan/bvar-toolkit) and tutorials (https://joshuachan.org/tutorials/). Jouchi Nakajima offers TVP-VAR-SV with detailed documentation (https://sites.google.com/site/jnakajimaweb/program). Dimitris Korobilis maintains Bayesian multivariate methods, including large TVP-VARs (https://sites.google.com/site/dimitriskorobilis/matlab), and Gary Koop provides various Bayesian implementations (https://sites.google.com/site/garykoop/).
+Markov-Switching Models
+In R, MSwM provides univariate Markov-switching regression via the EM algorithm, while MSBVAR, by (Brandt, 2016), implements Markov-switching Bayesian VARs. In Python, statsmodels provides MarkovRegression and MarkovAutoregression classes for univariate models. It can be found at https://github.com/YaweiZhao/MSBVAR.
+Smooth Transition Models
+The R package tsDyn (Stigler and Di Narzo, 2024) provides a comprehensive nonlinear time series toolkit, including STAR, LSTAR, ESTAR, threshold VAR (TVAR), and threshold VECM specifications. For structural analysis, sstvars (Virolainen, 2024) implements structural smooth transition VARs.
+D.1.6 Global VAR and Panel VAR
+Related chapter: Chapter 13 (Panel and Global VARs)
+Global VAR
+The GVAR framework (Pesaran et al., 2004; Dees et al., 2007) models international linkages through trade-weighted foreign variables, enabling analysis of cross-country shock transmission. In R, BGVAR (Boeck et al., 2022) provides Bayesian GVAR estimation with sign restrictions and is the recommended choice for structural analysis, while GVARX implements the frequentist GVAR following Pesaran et al. In MATLAB, the GVAR Toolbox, developed by L. Vanessa Smith and Alessandro Galesi, is available at https://sites.google.com/site/gvarmodelling.
+Panel VAR
+For panel VAR estimation, R offers panelvar (GMM estimation) and bpvars (Bayesian panel VAR, part of the bsvars ecosystem). In Stata, the pvar command follows the Abrigo & Love approach.
+D.1.7 Factor Models and High-Dimensional Methods
+Related chapter: Chapter 8 (Factor Models and High-Dimensional Methods)
+Dynamic factor models provide dimension reduction for large panels (Stock and Watson, 2002a,b). As discussed in Chapter 8, they underpin both FAVAR analysis and modern nowcasting.
+R Packages. Key R packages for factor models and high-dimensional time series include the following. dfms (Krantz and Bagdziunas, 2023) provides efficient estimation of dynamic factor models via the EM algorithm following Doz et al. (2012) and Bańbura and Modugno (2014), and two-step estimation following Doz et al. (2011), with support for missing data and mixed-frequency settings. sparseDFM (Mosley et al., 2023) extends the standard DFM framework by constraining the loading matrices to be sparse, improving interpretability; it implements PCA, two-step, and EM estimation methods, including the novel sparse EM approach of Mosley et al. (2024). For real-time nowcasting, nowcasting (de Valk et al., 2019) implements dynamic factor model methods following Giannone et al. (2008) and Bańbura et al. (2011), providing tools to construct real-time data vintages and forecast economic variables at mixed frequencies. The R Package for Forecasting Models with Real-Time Data is at https://github.com/nmecsys/nowcasting. BigVAR (Nicholson et al., 2017b) estimates VAR and VARX models with structured convex penalties in high dimensions, including LASSO, elastic net, and hierarchical lag penalties, with penalty parameter selection via rolling cross-validation. fnets (Owens et al., 2024) implements factor-adjusted network estimation and forecasting for high-dimensional time series under a factor-adjusted VAR model, combining factor modeling with graphical structure estimation.
+MATLAB. FAVAR implementations are included in both the BVAR_ and BEAR toolboxes described in Section D.1.2.
+Python. The statsmodels.tsa.statespace.dynamic_factor module provides a state space formulation of dynamic factor models.
+D.1.8 Machine Learning and Text Analysis
+Related chapter: Chapter 9 (Machine Learning Methods)
+Machine Learning for Economics
+R Packages. The tidymodels framework provides a unified interface to random forests, boosting, neural networks, and other methods. For specific algorithms, xgboost implements gradient boosting (often the top performer in forecasting competitions), ranger offers fast random forests, and glmnet provides LASSO and elastic net regularization.
+Python. Python offers the most mature ML ecosystem. The scikit-learn library provides a comprehensive ML toolkit with a consistent API. Specialized packages include XGBoost for gradient boosting, LightGBM (Microsoft) for fast gradient boosting, and tensorflow/keras and PyTorch for deep learning (the latter with dynamic computation graphs).
+Text Analysis
+For central bank communication analysis, policy uncertainty measurement, and sentiment extraction:
+R Packages. The recommended starting point is quanteda for quantitative text analysis in economics applications. For tidy-data workflows, tidytext provides text mining tools. Topic modeling is available through topicmodels (Latent Dirichlet Allocation) and stm (structural topic models, which allow covariates to affect topic prevalence).
+Python. spaCy provides industrial-strength NLP with pretrained models, while nltk (the Natural Language Toolkit) offers comprehensive but slower text processing. For topic modeling and word embeddings, gensim is the standard choice. At the frontier, transformers (Hugging Face) provides access to pretrained language models (BERT, GPT) for state-of-the-art text analysis.
+D.2 Data Sources
+This section organizes data sources by geographic coverage and type. We begin with US data (the most commonly used in academic research), then cover international sources, real-time data, financial markets, and surveys.
+D.2.1 US Macroeconomic Data
+FRED: Federal Reserve Economic Data
+The Federal Reserve Bank of St. Louis maintains the most comprehensive free US economic database. FRED should be your first stop for US macroeconomic data.
+Coverage. FRED hosts over 840,000 time series from more than 118 sources, spanning national accounts, labor markets, prices, monetary aggregates, international data and exchange rates, and regional and state-level statistics.
+Access Methods. FRED data can be accessed through its web interface at https://fred.stlouisfed.org, a free API (registration required; see https://fred.stlouisfed.org/docs/api/), and an Excel add-in for direct download into spreadsheets. Programmatic access is available in R via the fredr package, in Python via pandas-datareader or fredapi, and in MATLAB via getFredData.
+Essential Series for Macroeconometrics. Table D.2 lists the series most commonly used in VAR and DSGE applications.
+Table D.2: Essential FRED Series for Macroeconometrics.
+Series ID	Variable	Notes
+GDPC1	Real GDP	Quarterly, SA, billions 2017$
+PCECC96	Real PCE	Personal consumption expenditures
+GPDIC1	Real Investment	Gross private domestic investment
+PAYEMS	Nonfarm Payrolls	Monthly, SA, thousands
+UNRATE	Unemployment Rate	Monthly, SA, percent
+CPIAUCSL	CPI	Monthly, SA, all urban consumers
+PCEPILFE	Core PCE	Fed's preferred inflation measure
+FEDFUNDS	Federal Funds Rate	Monthly, effective rate
+GS10	10-Year Treasury	Daily/monthly yield
+INDPRO	Industrial Production	Monthly, SA, 2017 = 100
+Practical Tips for FRED Data. When downloading data from FRED, check the seasonal adjustment status: series ending in "SA" are seasonally adjusted, while "NSA" are not—most macroeconometric work uses SA data. For real-time analysis, use ALFRED (see below) to obtain data as it was known at specific dates, and always document your download date since GDP and employment data undergo regular revisions. Finally, note that real variables are expressed in base-year dollars (currently 2017), which affects level comparisons across long samples.
+FRED-MD and FRED-QD
+Curated panels designed specifically for forecasting and factor models (McCracken and Ng, 2016). These datasets are used extensively in Chapter 8 and provide the data for the FAVAR application in Section 8.14.
+FRED-MD (Monthly). FRED-MD contains approximately 130 monthly series from 1959:01 to the present, organized into categories covering output and income, labor markets, housing, consumption and orders, money and credit, interest rates and spreads, prices, and the stock market. Prespecified transformation codes for stationarity are provided, and extracted factors are included in the download.
+FRED-QD (Quarterly). FRED-QD provides 248 quarterly series from 1959:Q1 to the present, with greater national accounts detail and sectoral coverage than the monthly panel. Transformation codes consistent with FRED-MD are provided.
+Access. Both datasets are available from the St. Louis Fed website at https://research.stlouisfed.org/econ/mccracken/fred-databases/, via the fbi package in R, or as direct CSV download with transformation codes.
+Transformation Codes. The transformation codes ensure stationarity for factor extraction:
+Code	Transformation
+1	Levels (no transformation)
+2	First difference: Δx_t
+3	Second difference: Δ²x_t
+4	Log: log(x_t)
+5	Log first difference (growth rate): Δ log(x_t)
+6	Log second difference: Δ² log(x_t)
+7	Change in percent change: Δ(x_t / x_{t−1} − 1)
+Bureau of Economic Analysis (BEA)
+The BEA produces the National Income and Product Accounts (NIPA)—the official source for GDP and its components.
+Key Products. BEA produces GDP and its components (with quarterly advance, second, and third estimates, plus annual data), personal income and outlays (monthly), fixed asset tables showing capital stock by industry, input-output accounts, regional accounts at the state and metro area level, and international transactions data covering the current account and capital flows.
+Access. Interactive tables are available at https://apps.bea.gov/iTable/, with API access at https://apps.bea.gov/api/. Vintage and historical data are also available for real-time analysis.
+GDP Release Schedule. Understanding the release schedule is essential for real-time analysis. The advance estimate appears one month after the quarter ends (based on incomplete data), followed by the second estimate at two months and the third estimate at three months. Annual revisions each July typically revise the previous three years, and comprehensive revisions every five years can change the entire history.
+Bureau of Labor Statistics (BLS)
+The BLS is the primary source for US labor market and price statistics.
+Key Products. The BLS publishes the monthly Employment Situation report (combining establishment survey payrolls and household survey unemployment data), the Current Population Survey (CPS) providing household-level labor force data, the Job Openings and Labor Turnover Survey (JOLTS) reporting monthly job openings, hires, and separations, various price indices (CPI, PPI, Employment Cost Index), and productivity statistics including output per hour and unit labor costs.
+Access. Data are available through the BLS data finder at https://www.bls.gov/data/ and an API at https://www.bls.gov/developers/. Microdata are accessible via IPUMS at https://ipums.org.
+D.2.2 Real-Time and Vintage Data
+Real-time data captures information actually available to forecasters and policymakers at each point in time. This is essential for fair evaluation of forecasting methods and understanding historical policy decisions.
+Philadelphia Fed Real-Time Data Center
+The most comprehensive real-time macroeconomic database for the US.
+Key Products. The center's flagship product is the Real-Time Data Set for Macroeconomists (RTDSM), which provides quarterly vintages since 1965 for GDP, its components, prices, and employment. Each vintage shows the complete history as known at that date, making it essential for understanding how data looked when policy decisions were made. The center also hosts the Survey of Professional Forecasters (SPF) (see Section D.2.5), Greenbook Data containing Federal Reserve staff forecasts (available with a 5-year lag), and the Livingston Survey, a biannual expectations survey running since 1946.
+Data Structure. Real-time data is organized as a matrix whose rows correspond to observation dates (e.g., 2020:Q1, 2020:Q2, …) and whose columns correspond to vintage dates (e.g., Nov 2020, Feb 2021, …). Each column shows the full history as known at that vintage.
+Access. The data are available from the Philadelphia Fed at https://www.philadelphiafed.org/surveys-and-data/real-time-data-research, via the alfred package in R, and through Excel or text download organized by variable and vintage.
+ALFRED: Archival FRED
+ALFRED maintains historical vintages of all FRED series, allowing you to access any series as it appeared on any past date.
+Features. ALFRED allows access to any FRED series as it appeared on any historical date, tracking revisions, benchmark changes, and seasonal adjustment updates. API access is available via the FRED API with a vintage date parameter.
+Access. The web interface is at https://alfred.stlouisfed.org, and the alfred package provides access from R.
+FRED-SD: State-Level Real-Time Database
+Bokun et al. (2023) extend the ALFRED framework to US state-level data with FRED-SD, providing real-time vintages for state economic indicators.
+Coverage. FRED-SD covers all 50 US states plus the District of Columbia with monthly and quarterly data on employment, income, housing, production, and other regional indicators. The database is particularly valuable for regional nowcasting, studying geographic heterogeneity in business cycles, and exploiting disaggregated information to improve national forecasts. Like ALFRED, FRED-SD preserves the complete revision history for all series.
+Applications. State-level real-time data enables several important applications: (1) regional nowcasting using mixed-frequency models that combine monthly state employment with quarterly state GDP; (2) analysis of how national shocks propagate across states with different economic structures; (3) evaluation of state-level policy interventions accounting for data revisions; and (4) extraction of common factors from cross-state information to improve national forecasts.
+Access. FRED-SD is available at https://research.stlouisfed.org/resources/fred-sd/ with API access through the standard FRED API by specifying state-level series codes.
+OECD Real-Time Database
+Coverage. The OECD real-time database covers OECD countries with vintages from the mid-1990s, including GDP, industrial production, unemployment, and prices. Data are accessible at https://stats.oecd.org under Main Economic Indicators → Original Release and Revisions.
+D.2.3 International Data
+IMF Data
+World Economic Outlook (WEO). The WEO provides biannual forecasts (April and October) for 190+ countries covering GDP, inflation, fiscal balance, and the current account. Historical vintages are available for forecast evaluation. Access: https://www.imf.org/en/Publications/WEO.
+International Financial Statistics (IFS). The IFS provides comprehensive financial and economic statistics—exchange rates, interest rates, prices, and national accounts—at monthly, quarterly, and annual frequency. Access: https://data.imf.org.
+World Bank
+World Development Indicators (WDI). The World Bank's WDI provides over 1,400 indicators for more than 200 countries, with long time series for some variables extending back to 1960. Coverage includes GDP, poverty, health, education, and infrastructure. Access: https://databank.worldbank.org.
+OECD Statistics
+Coverage. The OECD covers its 38 member countries plus key partners, with data on national accounts, labor markets, prices, and trade. The Main Economic Indicators (MEI) provide timely short-term data, and the STAN database offers industry-level statistics.
+Access. Data are available through OECD.Stat at https://stats.oecd.org, the OECD package in R, and pandasdmx in Python.
+Eurostat and ECB
+Eurostat. Eurostat provides data for EU member states with harmonized definitions under ESA 2010. The database is available at https://ec.europa.eu/eurostat/data/database, with access from R via the eurostat package.
+ECB Statistical Data Warehouse. The ECB SDW covers euro area aggregates and individual country data, with particular strength in monetary statistics, interest rates, and bank lending. The website is https://sdw.ecb.europa.eu, accessible from R via the ecb package.
+Bank for International Settlements (BIS)
+Coverage. The BIS provides international banking statistics, credit to the nonfinancial sector (with long historical series), residential and commercial property prices, nominal and real effective exchange rates, and debt securities statistics. Access: https://www.bis.org/statistics/.
+EA-MD-QD
+EA-MD-QD (maintained by Matteo Barigozzi and Claudio Lissona) is the euro-area counterpart of FRED-MD and FRED-QD: a collection of large monthly and quarterly macroeconomic datasets for the euro-area aggregate and ten member countries (Austria, Belgium, France, Germany, Greece, Ireland, Italy, the Netherlands, Portugal, and Spain), designed for factor models and high-dimensional analysis. Each release provides seasonally adjusted series together with MATLAB code for frequency selection, missing-value imputation, stationarity transformations, and COVID-era outlier treatment. The dataset is updated monthly at https://doi.org/10.5281/zenodo.21038097.
+D.2.4 Financial Market Data
+Interest Rates and Yields
+FRED Series. Key interest rate series on FRED include daily Treasury yields at various maturities (DGS1, DGS2, DGS5, DGS10, DGS30), the federal funds rate (FEDFUNDS for the monthly average, DFF for daily), SOFR rates (replacing LIBOR) at various maturities, and Moody's corporate yields (AAA, BAA).
+Gürkaynak–Sack–Wright Yield Curve. This dataset provides zero-coupon Treasury yields from 1961 to the present at daily frequency for maturities from 1 to 30 years. It is preferred to raw yields as it avoids coupon effects. The data are available from the Federal Reserve Board website.
+Equity Markets
+Free Sources. Yahoo Finance and Google Finance provide daily stock prices and indices, accessible programmatically via the quantmod package in R and the yfinance package in Python.
+Key Indices via FRED. The S&P 500 is available as series SP500, the VIX (implied volatility) as VIXCLS, and the Wilshire 5000 as WILL5000IND.
+High-Frequency Monetary Policy Data
+These data are essential for the identification strategies discussed in Chapter 4.
+Fed Funds Futures. Fed funds futures data are available from the CME Group (https://www.cmegroup.com), and historical data from Gürkaynak–Sack–Swanson are available on the authors' websites.
+Preconstructed Monetary Policy Surprise Series. Several research teams have constructed and made available high-frequency surprise measures. Gürkaynak–Sack–Swanson provide target and path factors. Miranda-Agrippino–Ricco construct information-robust monetary shocks purified of Fed information effects. Nakamura–Steinsson offer policy news shocks. Jarociński–Karadi provide decomposed surprises separating monetary policy from information. Bu–Rogers–Wu construct shadow rate shocks for the zero lower bound period.
+EA-MPD (ECB Monetary Policy Database). This database provides euro area high-frequency surprises around ECB announcements, decomposed into target rate, timing, forward guidance, and QE components. Access is through ECB working paper replication files.
+Credit Spreads and Risk Measures
+Corporate Spreads. The BAA–AAA spread on FRED is the classic credit risk measure. The Gilchrist–Zakrajšek (GZ) excess bond premium isolates risk appetite from default risk and is available from the Federal Reserve Board at https://www.federalreserve.gov/econres/notes/feds-notes/.
+D.2.5 Survey-Based Data
+Survey data provides direct measures of expectations, sentiment, and subjective uncertainty that cannot be inferred from market prices.
+US Survey of Professional Forecasters (SPF)
+The longest-running survey of macroeconomic forecasters in the US, essential for expectations research.
+Coverage. The SPF has been conducted quarterly since 1968:Q4, with responses from 30–40 anonymous professional forecasters. It covers real GDP, inflation (multiple measures), unemployment, and interest rates at horizons ranging from the current quarter through four quarters ahead, with annual calendar-year and long-run (5–10 year) forecasts also available. Both individual-level and aggregate (median, mean) forecasts are published.
+Unique Features. The SPF is distinguished by its density forecasts, in which respondents assign probabilities to outcome bins, enabling direct measurement of subjective uncertainty. Individual variance can be computed from these density forecasts, and both levels and growth rate point predictions are available.
+Access. The data are hosted by the Philadelphia Fed at https://www.philadelphiafed.org/surveys-and-data/spf, accessible via the spfR package in R, and available as Excel downloads organized by variable.
+University of Michigan Consumer Sentiment
+This household survey measures consumer confidence and inflation expectations.
+Coverage. Published monthly since 1952 (with both preliminary and final releases each month), the survey reports the Index of Consumer Sentiment (combining current conditions and expectations) and both 1-year and 5–10 year inflation expectations. Microdata are available for subscribers.
+Access. The overall index is available on FRED as UMCSENT and 1-year inflation expectations as MICH. The survey website is http://www.sca.isr.umich.edu.
+Conference Board Consumer Confidence
+An alternative household sentiment measure with different methodology than Michigan.
+Coverage. Published monthly since 1967, the survey reports a Present Situation Index and an Expectations Index, with questions covering labor market and business conditions.
+Access. Available on FRED as CONCCONF (overall) and CONEXPEC (expectations component), and from the Conference Board at https://www.conference-board.org.
+Blue Chip Economic Indicators
+A commercial survey of business economists, widely used as benchmark for professional forecasts.
+Coverage. Published monthly since 1976, it aggregates forecasts from 50+ forecasters at major financial institutions and corporations. Variables include GDP, inflation, interest rates, and unemployment, with near-term (current and next quarter) and annual calendar year forecasts.
+Access. Subscription is required (https://www.wolterskluwer.com/en/solutions/blue-chip), though historical consensus data are available through the Philadelphia Fed.
+ECB Survey of Professional Forecasters
+The Euro Area counterpart to the US SPF, conducted quarterly since 1999. It covers HICP inflation, real GDP growth, and unemployment at horizons of 1 year, 2 years, and 5 years ahead, plus long-term expectations. Density forecasts are also available. Access: ECB Statistical Data Warehouse at https://sdw.ecb.europa.eu.
+Other International Surveys
+Bank of England. The BoE conducts the Inflation Attitudes Survey of household expectations (since 2001) and the Decision Maker Panel measuring business uncertainty (since 2016).
+ZEW Economic Sentiment (Germany). A monthly survey of approximately 350 financial analysts covering the current situation and 6-month expectations. Access: https://www.zew.de; FRED: ZEWEZONE, ZEWGERMANY.
+Ifo Business Climate (Germany). A monthly survey of approximately 9,000 firms covering the current situation and 6-month expectations across manufacturing, construction, trade, and services. Access: https://www.ifo.de.
+D.2.6 Alternative and Big Data
+Text-Based Indicators
+Economic Policy Uncertainty (EPU). The EPU index is a news-based uncertainty measure constructed from newspaper coverage, available monthly from 1985 for the US and for 25+ other countries. Access: https://www.policyuncertainty.com. Related indices from the same source include the Monetary Policy Uncertainty Index, Trade Policy Uncertainty Index, Partisan Conflict Index, and Geopolitical Risk Index.
+Alternative Data Sources
+Google Trends. Google Trends provides search volume indices for terms and topics that can be useful for nowcasting (e.g., unemployment claims, retail sales). Access: https://trends.google.com and the gtrendsR package in R.
+High-Frequency Economic Indicators. The COVID-19 pandemic spurred the development of timely alternative indicators, including Our World in Data (https://ourworldindata.org), Google Mobility Reports, and Opportunity Insights credit card spending data.
+D.3 Practical Guidance
+D.3.1 Software Recommendations by Use Case
+For Standard Bayesian VAR Analysis. Users who want a graphical interface should start with the BEAR toolbox in MATLAB. Those who need speed and modern heteroskedasticity-based methods should use bsvars in R. For the most comprehensive feature set and documentation, the BVAR_ toolbox in MATLAB is recommended.
+For Frequentist VAR. For quick exploratory analysis, the vars package in R is the simplest option. Researchers seeking replication codes for published papers will find the VAR Toolbox in MATLAB most useful. Stata users benefit from the well-documented built-in var/svar commands.
+For DSGE Estimation. Dynare in MATLAB or Octave is the standard choice due to its wide adoption. For computational speed, Dynare.jl or MacroModelling.jl in Julia are preferred. For learning with worked examples, Pfeifer's DSGE_mod repository is invaluable. For DSGE models with Student-t shocks and stochastic volatility, the DSGE-SVt MATLAB toolbox (Section D.1.4) provides a dedicated Bayesian toolkit.
+For Local Projections. In R, the lpirfs package provides the most comprehensive implementation. In Stata, the native lpirf command (from Stata 17) is available. In MATLAB, local projections are included in the BVAR_ toolbox.
+For Reproducible Research. The best workflow for documentation is R packages combined with RMarkdown or Quarto. Python users benefit from Jupyter notebooks. Version control through Git integration is recommended on any platform.
+For Computationally Intensive Work. DSGE estimation with many shocks or nonlinear filtering is best done in Julia. Large-scale Bayesian estimation likewise benefits from Julia or optimized C++. For parallel computing, the MATLAB Parallel Computing Toolbox and Julia (with native parallelism) are the main options.
+For Machine Learning Integration. Python offers the best ecosystem (scikit-learn, TensorFlow, PyTorch). In R, the tidymodels framework provides a unified interface, and HDeconometrics is designed specifically for economists.
+D.3.2 Working with Survey Data
+Constructing Standard Measures
+Consensus Forecast. The median or mean across forecasters at time t for horizon h:
+\bar{F}_t^h = \frac{1}{N_t} \sum_{i=1}^{N_t} F_{i,t}^h. \qquad \text{(D.1)}
+The median is often preferred as it is robust to outliers.
+Forecast Disagreement. The cross-sectional standard deviation measures disagreement:
+D_t^h = \sqrt{\frac{1}{N_t - 1} \sum_{i=1}^{N_t} \left(F_{i,t}^h - \bar{F}_t^h\right)^2}. \qquad \text{(D.2)}
+Disagreement is often interpreted as a proxy for uncertainty, though the relationship is imperfect.
+Subjective Uncertainty. For surveys with density forecasts (SPF, Michigan), individual uncertainty can be computed:
+U_{i,t}^h = \sqrt{\sum_k p_{i,t,k}^h \left(m_k - F_{i,t}^h\right)^2}, \qquad \text{(D.3)}
+where pʰᵢ,ₜ,ₖ is the probability forecaster i assigns to bin k, and mₖ is the bin midpoint.
+Forecast Revision. The change in forecast for a fixed target date:
+R_t^h = F_t^h - F_{t-1}^{h+1}. \qquad \text{(D.4)}
+Revisions reveal new information incorporated by forecasters.
+Testing Forecast Properties
+Rationality Tests. Under rational expectations, forecast errors should be unpredictable:
+y_{t+h} - F_t^h = \alpha + \beta X_t + \varepsilon_{t+h}. \qquad \text{(D.5)}
+Test H₀: α = 0, β = 0 jointly. Rejection indicates inefficient use of information in Xₜ.
+Efficiency Tests. Forecasts should fully incorporate past information:
+y_{t+h} - F_t^h = \gamma \left(F_t^h - F_{t-1}^{h+1}\right) + \varepsilon_{t+h}. \qquad \text{(D.6)}
+Test H₀: γ = 0. Rejection suggests forecasters under- or over-react to new information.
+Sticky Information Test. Following Mankiw and Reis (2002), test for infrequent forecast updating:
+\left(F_{i,t}^h - F_{i,t-1}^{h+1}\right) = \lambda \left(F_t^{CB,h} - F_{i,t-1}^{h+1}\right) + \varepsilon_{i,t}, \qquad \text{(D.7)}
+where Fₜᶜᴮ,ʰ is a benchmark (e.g., central bank forecast). λ < 1 indicates sticky updating.
+Using Surveys in Structural Analysis
+News vs. Noise Shocks. Survey data can help distinguish news shocks (where both forecasts and outcomes move together) from noise shocks (where forecasts move but outcomes do not).
+Purifying Monetary Policy Instruments. As discussed in Chapter 4, Miranda-Agrippino and Ricco (2021) show how to orthogonalize high-frequency surprises with respect to Fed information to isolate pure monetary policy shocks.
+Expectations as VAR Variables. Survey expectations are increasingly incorporated directly into structural models: consumer confidence in consumption VARs, inflation expectations in Phillips curve analysis, and forecast disagreement as an uncertainty proxy in uncertainty VARs.
+D.3.3 Data Quality Considerations
+Timing Issues. Survey collection dates matter for real-time analysis: information sets differ across surveys (for example, the SPF is collected mid-quarter, while Michigan runs continuously). Timing assumptions should always be documented in published research.
+Definition Changes. GDP definitions change over time (for example, intellectual property was capitalized in the 2013 comprehensive revision), and survey questions may change wording. Researchers should check documentation carefully for structural breaks in series definitions.
+Panel Attrition. Not all forecasters respond every period, and panel composition changes can affect both consensus and disagreement measures. Individual fixed effects help but do not fully resolve composition bias.
+Herding and Strategic Behavior. Forecasters may herd toward the consensus due to career concerns, and extreme forecasts may be avoided because of reputational risk. Robust statistics, such as the median or trimmed mean, are generally preferred for constructing consensus measures.
+D.3.4 Computational Considerations
+Language Performance. Aruoba and Fernández-Villaverde (2015) compare programming languages for DSGE model solution and find that Julia performs within 2.5× of optimized C++ (making it excellent for most applications), while MATLAB is approximately 10× slower than C++, and Python and R are significantly slower without careful optimization. In practice, the choice of language depends on the task: for standard BVAR estimation, any platform works well since the bottleneck is usually MCMC rather than matrix operations; for particle filtering and large-scale Bayesian estimation, Julia or C++ are recommended; and for machine learning integration, Python offers the most mature ecosystem.
+Memory Management. When working with large datasets, R users should prefer data.table over base data frames, Python users should use pandas with appropriate dtypes (and consider dask for out-of-memory data), and MATLAB users should preallocate arrays and avoid growing arrays in loops. For long MCMC chains, storing thinned chains (every k-th draw), writing to disk periodically to prevent memory overflow, and using binary formats (HDF5, .rds, .mat) for large outputs are all advisable.
+Cloud and High-Performance Computing. Some tasks in macroeconometrics—particularly particle filtering for nonlinear DSGE models, large-scale TVP-VAR estimation with stochastic volatility, and machine learning methods applied to high-dimensional panels—can exceed the memory or processing capacity of a standard laptop. For such applications, cloud computing platforms offer a practical solution. Google Colab (https://colab.research.google.com) provides free access to GPU-accelerated Python notebooks, which is particularly useful for deep learning and computationally intensive forecasting exercises. Amazon SageMaker and Microsoft Azure ML offer scalable environments for larger projects, though these require paid accounts. Many universities also maintain high-performance computing (HPC) clusters that provide access to multicore processors and large memory allocations at no cost to researchers; students should check with their institution's research computing services. When moving to cloud or HPC environments, containerization tools, such as Docker, help ensure that code, dependencies, and package versions are fully portable across machines, which also benefits reproducibility.
+D.4 Online Resources and Code Repositories
+D.4.1 Author Websites with Code
+Several researchers maintain extensive, well-documented code repositories that serve as essential complements to their published work. Gary Koop provides code for Bayesian econometrics, including TVP, stochastic volatility, and model averaging (https://sites.google.com/site/garykoop/home/computer-code-2). Dimitris Korobilis maintains code for TVP-VAR, factor models, and machine learning for macro (https://sites.google.com/site/dimitriskorobilis). Joshua Chan offers state space models, stochastic volatility, and efficient samplers (https://joshuachan.org/code.html), a MATLAB BVAR toolkit (https://github.com/joshuaccchan/bvar-toolkit), and a series of tutorials on Bayesian macroeconometrics (https://joshuachan.org/tutorials/). Silvia Miranda-Agrippino provides BVAR, Bayesian LP, and Proxy SVAR code (https://silviamirandaagrippino.com/code-data). Haroon Mumtaz shares Bayesian VAR, TVP-VAR, and factor model implementations (https://sites.google.com/site/hmumtaz77/code). Katerina Petrova provides TVP-VAR and TVP-DSGE code (https://sites.google.com/site/katerinapetrovawebpage/research). James LeSage offers a comprehensive Econometrics Toolbox for MATLAB that covers spatial econometric estimation, Bayesian methods, time-series and VAR modeling, and regression analysis (https://www.spatial-econometrics.com). Finally, Òscar Jordà maintains code for local projections and smooth LP (https://sites.google.com/site/oscarjorda).
+D.4.2 Community Resources
+Useful community-maintained resources include QuantEcon (https://quantecon.org), which offers open-source Python and Julia lectures on quantitative economics; r-econometrics.com, with R tutorials for BVAR, SVAR, and factor models; the Forum Applied Macro (https://forumappliedmacro.wixsite.com/website/forum), a community-curated collection maintained by Mariarosaria Comunale; Awesome-VAR (https://github.com/kvasilopoulos/awesome-var), a curated GitHub list of VAR resources maintained by Kostas Vasilopoulos; and EconMacro (https://www.jamelsaadaoui.com/tag/stata-code/), a blog with codes, mainly in STATA and discussion about macroeconometric models applied to international economics, maintained by Jamel Saadaoui.
+D.4.3 Replication Archives
+Major journals now require the availability of code and data. The most important archives are the AEA Data and Code Repository for AER and AEJ journals (https://www.openicpsr.org/openicpsr/aea), the Journal of Applied Econometrics Data Archive (http://qed.econ.queensu.ca/jae/), the general-purpose openICPSR repository from the Inter-university Consortium for Political and Social Research (https://www.openicpsr.org), and Harvard Dataverse (https://dataverse.harvard.edu).
+Quarto
+Quarto (https://quarto.org), the next-generation successor to RMarkdown developed by Posit, is rapidly becoming the standard for reproducible scientific documents. Unlike RMarkdown, Quarto is language-agnostic: a single .qmd file can combine R, Python, and Julia code chunks with narrative text, LaTeX equations, and citations, and render to HTML, PDF, or Word from one source. Existing .Rmd files can be rendered without modification. Quarto integrates with RStudio, VS Code, Positron, and Jupyter Lab, and its visual editor makes it accessible to students who are not comfortable writing raw markdown. For textbook companion codes hosted on GitHub, Quarto documents provide an ideal format: students clone the repository, run quarto render, and obtain a fully reproducible document with all results regenerated from source.
+D.5 Quick Reference Tables
+Table D.3: Software Packages by Methodology.
+Methodology	Recommended Packages
+VAR/SVAR	MATLAB: VAR Toolbox, BVAR_, BEAR, Chan's bvar-toolkit; R: bsvars, BVAR, bvartools, vars; Stata: var, svar, bayes:var
+Local Projections	R: lpirfs; Stata: lpirf, locproj; MATLAB: BVAR_
+DSGE Models	MATLAB: Dynare, DSGE-SVt; Julia: Dynare.jl, MacroModelling.jl
+Time-Varying Parameters	R: bvarsv, shrinkTVP; MATLAB: Chan, Korobilis, Nakajima codes
+Markov-Switching	R: MSwM, MSBVAR; Python: statsmodels
+Factor Models	R: dfms, nowcasting, BigVAR; Python: statsmodels
+Global/Panel VAR	R: BGVAR, panelvar, bpvars; MATLAB: GVAR Toolbox
+Machine Learning	Python: scikit-learn, XGBoost; R: tidymodels, xgboost
+Text Analysis	Python: spaCy, transformers; R: quanteda, tidytext
+Table D.4: Essential US Data Sources.
+Source	Key Data
+FRED	800,000+ series; national accounts, labor, prices, financial, international
+FRED-MD/QD	Curated panels (134 monthly, 248 quarterly) for forecasting and factor models
+BEA	GDP and components, personal income, fixed assets, I-O accounts, regional data
+BLS	Employment, unemployment, CPI, PPI, productivity, JOLTS
+Philadelphia Fed	Real-time data (RTDSM), SPF, Greenbook forecasts, Livingston Survey
+ALFRED	Historical vintages of all FRED series
+Table D.5: International Data Sources.
+Source	Coverage
+IMF	WEO biannual forecasts (190+ countries), IFS financial statistics, BoP data
+World Bank	WDI (1,400+ indicators, 200+ countries), long time series from 1960
+OECD	38 member countries; MEI, STAN industry data, real-time database
+Eurostat	EU harmonized data (ESA 2010), HICP, labor Force Survey
+ECB SDW	Euro area monetary, financial, bank lending, supervisory data
+BIS	International banking, credit to nonfinancial sector, property prices, exchange rates
+Table D.6: Survey Data Sources.
+Survey	Frequency	Key Variables
+SPF (US)	Quarterly	GDP, inflation, unemployment; density forecasts available
+Michigan	Monthly	Consumer sentiment, 1-year and 5–10 year inflation expectations
+Conference Board	Monthly	Present situation index, expectations index
+Blue Chip	Monthly	Professional forecasts, 50+ forecasters (subscription required)
+ECB SPF	Quarterly	Euro Area HICP, GDP, unemployment; density forecasts
+BoE Surveys	Quarterly/Monthly	Household inflation expectations, business uncertainty
+ZEW (Germany)	Monthly	Financial analyst sentiment (300 analysts)
+Ifo (Germany)	Monthly	Business climate (9,000 firms), by sector
 
